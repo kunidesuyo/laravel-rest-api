@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\MockObject\Builder\Stub;
 
 class ApiController extends Controller
 {
@@ -24,7 +25,14 @@ class ApiController extends Controller
     }
   
     public function getStudent($id) {
-      // logic to get a student record goes here
+        if(Student::where('id', $id)->exists()) {
+            $student = Student::where('id', $id)->get()->toJson(JSON_PRETTY_PRINT);
+            return response($student, 200);
+        } else {
+            return response()->json([
+                "message" => "student not found"
+            ], 404);
+        }
     }
   
     public function updateStudent(Request $request, $id) {
